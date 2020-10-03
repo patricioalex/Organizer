@@ -1,45 +1,54 @@
 <?php
 
+  require_once('Controller.php');
 /**
  * Class com métodos que realizam o controle das ações do organizador
  */
 
- class Control {
+ class Control implements Controller {
      
-   private static $nameDir;
-   private static $extension;
+   private $nameDir;
+   private $extension;
+   private $allFiles;
 
     public function __construct()
     {
-      self::setNameDir('Arquivos_');
+      $this->setNameDir('Arquivos_');
+      $this->setAllFiles(array());
     }
+
+
+    // public function readDir($dir){
+        // if(opendir($dir)){
+        //   while
+        // }
+    // }
 
     /**
      * @method nameFolder()
      *
      * @return void
      */
-    public static function nameFolder(){
-        return self::getNameDir().self::getExtension();
+    public function nameFolder(){
+        return $this->getNameDir().$this->getExtension();
     }
 
 
     /**
-     * @method folderExists()
+     * folderExists
      *
-     * @param array $dir
-     * @param [type] $extesion
+     * @param [type] $dir
+     * @param [type] $extension
      * @return void
      */
-    public static function folderExists($dir, $extension){
-      self::setExtension($extension);
-      // $all = array();
-      $all = self::list($dir);      
-      if(in_array(self::getNameDir().strtoupper($extension), $all)){
+    public function folderExists($dir, $extension){
+      $this->setExtension(strtoupper($extension));   
+      $this->list($dir);
+      if(in_array($this->getNameDir().strtoupper($extension), $this->getAllFiles())){
           return true;
       }else{
         try {
-          self::createFolder($dir, $extension);
+          $this->createFolder($dir, $extension);
           return true;
         } catch (Exception $error) {
             return "Exception: " . $error->getMessage();
@@ -54,45 +63,57 @@
      * @param [type] $extesion
      * @return void
      */
-    public static function createFolder($dir, $extension){
-      if(mkdir($dir.self::getNameDir().strtoupper($extension))){
+    public function createFolder($dir, $extension){
+      if(mkdir($dir.$this->getNameDir().strtoupper($extension))){
         return true;
       }else{
-        throw new Exception(self::message($message = 4));
+        throw new Exception($this->message($message = 4));
       }
         
         
     }
 
-    public static function deleteFolder($arg){
+    public function deleteFolder($arg){
 
     }
 
-    /**
-     * @method list()
-     *
-     * @param [type] $dir
-     * @return void
-     */
-    public static function list($dir){
-      // $all = array();
-      opendir($dir);
+  /**
+   * list
+   *
+   * @param [type] $dir
+   * @return void
+   */
+    public function list($dir){
+      if(opendir($dir)){
         while($file = readdir()){
           $all[] = $file;
         } 
-      closedir($dir);
-      return $all;
-    }
-
-    public static function checkFileExtension($arg){
-
+        closedir();
+        $this->setAllFiles($all);
+        return true;
+      }else{
+        return false;
+      }
     }
     
-    public static function rollback($arg){
+    /**
+     * check
+     *
+     * @param [type] $dir
+     * @param [type] $file
+     * @return void
+     */
+    public function check($dir, $file){
+        if(is_dir($dir.$file)){
+          return true;
+        }
+    }
+    
+    public function rollback($arg){
 
     }
 
-    public static function message($status){
+    public function message($status){
 
       switch($status){
         case 0:
@@ -113,37 +134,57 @@
    /**
     * Get the value of nameDir
     */ 
-   public static function getNameDir()
+   public function getNameDir()
    {
-      return self::$nameDir;
+      return $this->nameDir;
    }
 
    /**
-    * Set the value of nameDir
+    * setNameDir
     *
-    * @return  self
-    */ 
-   public static function setNameDir($nameDir)
+    * @param [type] $nameDir
+    * @return void
+    */
+   public function setNameDir($nameDir)
    {
-      self::$nameDir = $nameDir;
+      $this->nameDir = $nameDir;
 
    }
 
    /**
     * Get the value of extension
     */ 
-   public static function getExtension()
+   public function getExtension()
    {
-      return self::$extension;
+      return $this->extension;
    }
 
    /**
-    * Set the value of extension
+    * setExtension
     *
-    * @return  self
-    */ 
-   public static function setExtension($extension)
+    * @param [type] $extension
+    * @return void
+    */
+   public function setExtension($extension)
    {
-      self::$extension = $extension;
+      $this->extension = $extension;
+   }
+
+   /**
+    * Get the value of allFiles
+    */ 
+   public function getAllFiles()
+   {
+      return $this->allFiles;
+   }
+
+   /**
+    * Set the value of allFiles
+    *
+    * @return  void
+    */ 
+   public function setAllFiles($allFiles)
+   {
+      $this->allFiles = $allFiles;
    }
  }
