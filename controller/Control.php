@@ -10,10 +10,12 @@
    private $nameDir;
    private $extension;
    private $allFiles;
+   private $noExtension;
 
     public function __construct()
     {
       $this->setNameDir('Arquivos_');
+      $this->setNoExtension('sem_extensao');
       $this->setAllFiles(array());
     }
 
@@ -68,9 +70,7 @@
         return true;
       }else{
         throw new Exception($this->message($message = 4));
-      }
-        
-        
+      }      
     }
 
     public function deleteFolder($arg){
@@ -106,7 +106,17 @@
     public function check($dir, $file){
         if(is_dir($dir.$file)){
           return true;
+        }else{
+          return false;
         }
+    }
+
+    public function noExtension($dir, $file){
+      if(!$this->check($dir, $file)){
+        if($this->folderExists($dir, $this->getNoExtension())){
+          rename($dir.$file, $dir.$this->nameFolder().'/'.$file);
+        }
+      }   
     }
     
     public function rollback($arg){
@@ -186,5 +196,24 @@
    public function setAllFiles($allFiles)
    {
       $this->allFiles = $allFiles;
+   }
+
+   /**
+    * Get the value of noExtension
+    */ 
+   public function getNoExtension()
+   {
+      return $this->noExtension;
+   }
+
+  /**
+   * Undocumented function
+   *
+   * @param [type] $noExtension
+   * @return void
+   */
+   public function setNoExtension($noExtension)
+   {
+      $this->noExtension = $noExtension;
    }
  }

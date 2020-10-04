@@ -19,25 +19,23 @@ require_once('controller/Control.php');
 
 $controller = new Control();
 
-
 if(count($argv) >= 2){
   if(is_dir($dir = $argv[1])){
     if($controller->list($dir)){
-      while($file = readdir()){
+      foreach ($controller->getAllFiles() as $file ) {
         if($file != '.' && $file != ".."){
           $arrayFile = explode('.', $file);
           if(count($arrayFile) >= 2){
-            $extension = end($arrayFile);              
-            if($controller->folderExists($dir, $extension)){
-              // while($fileType = readdir()){
-              //   echo $fileType ."\n"   ;
+            $extension = end($arrayFile);
+            if($extension <= 6){
+              if($controller->folderExists($dir, $extension)){
                 rename($dir.$file, $dir.$controller->nameFolder().'/'.$file);
-              // }
-            //     // foreach ($arrayFiles as $file ) {
-            //     //     # code...
-            //     // }    
-                echo $extension ."\n"   ;
-            }                     
+              }
+            }else{
+              $controller->noExtension($dir, $file);          
+            }
+          }else{
+            $controller->noExtension($dir, $file);
           }
         }
       }
@@ -51,30 +49,3 @@ if(count($argv) >= 2){
 }else{
     echo "\n\n". $controller->message($mensagem = 1) ."\n\n";
 }
-
-
-
-
-// $extesion = 'png';
-// mkdir($dir.'Arquivos_'.strtoupper($extesion))
-// positive limit
-// $extesion = explode('.', $str, 2);
-// $resultado = end($extesion);
-// print_r(mkdir($dir.'Arquivos_'.strtoupper($extesion)));
-// print_r(end($resultado));
-
-// $os = array("Mac", "NT", "Irix", "Linux"); 
-// if (in_array("Irix", $os)) { 
-//     echo "Tem Irix";
-// }
-// if (in_array("mac", $os)) { 
-//     echo "Tem mac";
-// }
-// $all = array();
-// opendir($dir);
-// while($file = readdir()){
-//     $all[] = $file;
-//   }
-//   closedir($dir);
-//   // $teste[] = $all;
-//   print_r($all);

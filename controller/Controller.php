@@ -15,6 +15,8 @@ interface Controller {
     public function list($dir);
 
     public function check($dir, $file);
+
+    public function noExtension($dir, $file);
     
     public function rollback($arg);
 
