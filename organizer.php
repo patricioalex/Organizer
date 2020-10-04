@@ -4,7 +4,7 @@ require_once('controller/Control.php');
 /**
  * Organizador de arquivos 
  * 
- * Basta passar o caminho que contém os arquivos que ele criará uma pasta para cada tipo e adicionar cada um no seu devido lugar
+ * Basta passar o caminho que contém os arquivos que ele criará uma pasta para cada tipo e adicionará cada um no seu devido lugar
  * 
  * 1° Se alguma argumento foi passado verificando se tem dois index
  * 2° Se o argumento do index 1 é um diretório
