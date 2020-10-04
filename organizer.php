@@ -6,15 +6,19 @@ require_once('controller/Control.php');
  * 
  * Basta passar o caminho que contém os arquivos que ele criará uma pasta para cada tipo e adicionar cada um no seu devido lugar
  * 
- * 1° Se alguma argumento foi passado
- * 2° Se o argumento é um diretório
- * 3° Se o diretório pode ser aberto
+ * 1° Se alguma argumento foi passado verificando se tem dois index
+ * 2° Se o argumento do index 1 é um diretório
+ * 3° chama um método do controller para listar todos os arquivos contidos no dirétorio e caso tenha algum erro será apresentado. 
  * 4° Looping para cada tipo de arquivo que for achado
- * 5° Ignorando os pontos do sistema 
+ * 5° Ignorando os pontos dos diretórios especiais 
  *    $arrayFile: Atributos recebendo uma array do nome do arquivo separado para cada ponto achado
- * 6° Se o atributo $arrayFile tem dois index na array para sabermos depois se é uma arquivo sem extensão ou um diretório
+ * 6° Se o atributo $arrayFile tem mais de dois index na array para sabermos depois se é uma arquivo sem extensão ou um diretório
  *    $extension: Pegando a extensão que sempre será o ultimo do index da array
- * 
+ * 7° se o nome da extensão do arquivo é maior ou igual a 6 para descartamos arquivos sem extensão e tratarmos separado.
+ * 8° Aciona uma método que verifica se existe um diretório, caso não existir é criado adicionando o arquivo daquele tipo.
+ *   Rename(): O método além de alterar nome de arquivo serve para mover arquivos para outros diretórios
+ *   noExtension(): Método que cria e move arquivos sem extensão para sua respectivo diretório conferindo 
+*    também se o diretório existe, caso não existir será criado.
  */
 
 $controller = new Control();
