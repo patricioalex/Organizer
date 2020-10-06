@@ -4,20 +4,7 @@
 /**
  * Organizador de arquivos 
  * 
- * Basta passar o caminho que contém os arquivos que ele criará uma pasta para cada tipo e adicionará cada um no seu devido lugar.
- * 
- * 1° Se algum argumento foi passado verificando se tem dois index.
- * 2° Se o argumento do index 1 é um diretório.
- * 3° Chama um método do controller para listar todos os arquivos contidos no dirétorio e caso tenha algum erro será apresentado. 
- * 4° chama um método Looping com a lista de arquivos que existem no diretório.
- * 5° Ignorando os pontos dos diretórios especiais.
- *    $arrayFile: Um array é criado com index para cada ponto achado no nome do arquivo.
- * 6° Se o atributo $arrayFile tem mais de dois index para sabermos depois se é uma arquivo sem extensão ou um diretório.
- *    $extension: Pegando a extensão que sempre será o ultimo valor da array.
- * 7° se o nome da extensão do arquivo é maior ou igual a 6 para descartamos arquivos sem extensão e tratarmos separado.
- * 8° Aciona uma método que verifica se existe um diretório, caso não existir é criado e adicionado no respectivo diretório.
- *   Rename(): O método além de alterar nome de arquivos também serve para mover arquivos para outros diretórios.
- *   noExtension(): Método que cria e move arquivos sem extensão para seu respectivo diretório. *    
+ * Basta passar o caminho que contém os arquivos que ele criará uma diretório para cada tipo e moverá para seu devido lugar.   
  */
 
 
@@ -32,7 +19,7 @@ interface Controller {
 
   public function createFolder($dir, $extension);
 
-  public function deleteFolder($arg);
+  // public function deleteFolder($arg);
 
   public function list();
 
@@ -46,7 +33,7 @@ interface Controller {
 
   public function moveFile($file);
   
-  public function rollback($arg);
+  // public function rollback($arg);
 
 }
 
@@ -81,7 +68,9 @@ interface Controller {
     }
 
     /**
-     * validateArgv
+     * @method validateArgv()
+     * 
+     * Valida se foi passado algum argumento
      *
      * @param [type] $argv
      * @return void
@@ -96,7 +85,9 @@ interface Controller {
 
     /**
      * @method nameFolder()
-     *
+     * 
+     * Pega o nome do diretório da extensão/tipo do arquivo
+     * 
      * @return void
      */
     public function nameFolder(){
@@ -105,8 +96,11 @@ interface Controller {
 
 
     /**
-     * folderExists
-     *
+     * @method folderExists()
+     * 
+     * Verifica se exite um diretório para a extensão/tipo de arquivo.
+     * Senão exitir, ele criará um.
+     
      * @param [type] $dir
      * @param [type] $extension
      * @return void
@@ -127,6 +121,8 @@ interface Controller {
     /**
      * @method createFolder()
      *
+     * Criador de diretório para extensã/Tipo de arquivo
+     * 
      * @param [type] $dir
      * @param [type] $extesion
      * @return void
@@ -141,18 +137,23 @@ interface Controller {
 
 
     /**
-     * deleteFolder
+     * @method deleteFolder()
+     * 
+     * Deleta diretório
      *
      * @param [type] $arg
      * @return void
      */
-    public function deleteFolder($arg){
+    // public function deleteFolder($arg){
 
-    }
+    // }
 
 
   /**
-   * list
+   * @method list()
+   * 
+   * Verifica e lista todos os arquivos contidos no diretório.
+   * Senão tiver arquivos no diretório, a aplicação é encerrada.
    *
    * @param [type] $dir
    * @return void
@@ -184,9 +185,12 @@ interface Controller {
     }
 
 
+
     /**
      * @method public checkDir()
      *
+     * Checa se o diretório é valído 
+     * 
      * @param [type] $dir
      * @return void
      */
@@ -201,7 +205,10 @@ interface Controller {
 
     
     /**
-     * check
+     * @method checkFile()
+     * 
+     * Checa se o argumento é um arquivo ou diretório.
+     * Isso ocorre quando há dúvida se é uma arquivo ou diretório que não foi achado extensão ou o tamanho da extensão é maior que 6.
      *
      * @param [type] $dir
      * @param [type] $file
@@ -216,7 +223,13 @@ interface Controller {
     }
 
     /**
-     * extension
+     * @method extension()
+     * 
+     * Valida se extiste extensão para o arquivo.
+     * Verifica se o tamanho do nome da extensão é maior que 6.
+     * Senão der false nas duas verificação acima, os mesmo serão verificados para saber se são diretório ou arquivo sem extensão.
+     * Verifica se existe diretório para o arquivo que foi validado nas outras etapas acima.
+     * 
      *
      * @param [type] $file
      * @return void
@@ -247,7 +260,11 @@ interface Controller {
 
 
     /**
-     * noExtension
+     * @method noExtension()
+     * 
+     * Aciona o método checkFile para saber se é um arquivo ou diretório.
+     * Verfica se o diretório sem extensão exite. Senão exitir, o será criado e moverá o respectivo arquivo.
+     * Aciona o método moveFile() se retornar true na etapa anterior.
      *
      * @param [type] $dir
      * @param [type] $file
@@ -256,19 +273,41 @@ interface Controller {
     public function noExtension($dir, $file){
       if(!$this->checkFile($dir, $file)){
         if($this->folderExists($dir, $this->getNoExtension())){
-          rename($dir.$file, $dir.$this->nameFolder().'/'.$file);
+          $this->moveFile($file);
         }
       }   
     }
     
-    public function rollback($arg){
 
-    }
+    /**
+     * @method rollback()
+     * 
+     * Desfaz a operação de organizar arquivos.
+     *
+     * @param [type] $arg
+     * @return void
+     */
+    // public function rollback($arg){
 
+    // }
+
+
+    /**
+     * @method moveFile()
+     * 
+     * Move arquvios para seus respectivos diretórios.
+     *
+     * @param [type] $file
+     * @return void
+     */
     public function moveFile($file){
       rename($this->getDir().$file, $this->getDir().$this->nameFolder().'/'.$file);
     }
 
+
+    /**
+     * Métodos especiais Getter e Setter
+     */
 
    /**
     * Get the value of nameDir
@@ -367,7 +406,7 @@ interface Controller {
 
 
  /**
-  * Estrutura try, catch e finally que controla a execução do aplicativo
+  * Estrutura try, catch e finally que controla a execução da aplicação
   */
 
 $control = new Control();
