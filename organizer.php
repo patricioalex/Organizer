@@ -20,40 +20,6 @@
  *   noExtension(): Método que cria e move arquivos sem extensão para seu respectivo diretório. *    
  */
 
-// $controller = new Control();
-
-// if(count($argv) >= 2){
-//   if(is_dir($dir = $argv[1])){
-//     if($controller->list($dir)){
-//       foreach ($controller->getAllFiles() as $file ) {
-//         if($file != '.' && $file != ".."){
-//           $arrayFile = explode('.', $file);
-//           if(count($arrayFile) >= 2){
-//             $extension = end($arrayFile);
-//             if($extension <= 6){
-//               if($controller->folderExists($dir, $extension)){
-//                 rename($dir.$file, $dir.$controller->nameFolder().'/'.$file);
-//               }
-//             }else{
-//               $controller->noExtension($dir, $file);          
-//             }
-//           }else{
-//             $controller->noExtension($dir, $file);
-//           }
-//         }
-//       }
-//     }else{
-//         echo "\n\n". $controller->message($mensagem = 3) ."\n\n";
-//     }
-//     closedir();
-//   }else{
-//       echo "\n\n". $controller->message($mensagem = 2) ."\n\n";
-//   }    
-// }else{
-//     echo "\n\n". $controller->message($mensagem = 1) ."\n\n";
-// }
-
-
 
 /**
  * Interface control
@@ -92,12 +58,20 @@ interface Controller {
 
  class Control implements Controller {
      
+  /**
+   * Atributos privates
+   *
+   * @var [type]
+   */
    private $nameDir;
    private $extension;
    private $allFiles;
    private $noExtension;
    private $dir;
 
+    /**
+     * construct
+     */
     public function __construct()
     {
       $this->setNameDir('Arquivos_');
@@ -106,7 +80,12 @@ interface Controller {
       $this->setDir(array());
     }
 
-
+    /**
+     * validateArgv
+     *
+     * @param [type] $argv
+     * @return void
+     */
     public function validateArgv($argv){
       if(count($argv) >= 2){
         return true;
@@ -114,13 +93,6 @@ interface Controller {
         throw new Exception("Nenhum diretório informado. Por favor, informe um diretório.");
       }
     }
-
-
-    // public function readDir($dir){
-        // if(opendir($dir)){
-        //   while
-        // }
-    // }
 
     /**
      * @method nameFolder()
@@ -167,9 +139,17 @@ interface Controller {
       }      
     }
 
+
+    /**
+     * deleteFolder
+     *
+     * @param [type] $arg
+     * @return void
+     */
     public function deleteFolder($arg){
 
     }
+
 
   /**
    * list
@@ -290,24 +270,6 @@ interface Controller {
     }
 
 
-    // public function message($status){
-
-    //   switch($status){
-    //     case 0:
-    //       return "Pasta(s) criada e arquivos alocados.";
-    //     case 1: 
-    //       return "Erro! Nenhum diretório informado. Por favor, informe um diretório.";
-    //     case 2: 
-    //       return "O argumento passado não é um diretório!";
-    //     case 3:
-    //       return "O diretório não pode ser aberto! Talvez seja permissão de pasta.";
-    //     case 4: 
-    //       return "O diretório não pode ser criado! Talvez seja permissão de pasta.";          
-    //   }         
-    // }
-
-
-
    /**
     * Get the value of nameDir
     */ 
@@ -405,7 +367,7 @@ interface Controller {
 
 
  /**
-  * Estrutura tray, catch e finally que controla a execução do aplicativo
+  * Estrutura try, catch e finally que controla a execução do aplicativo
   */
 
 $control = new Control();
@@ -425,19 +387,16 @@ try {
         }
       }
     }  
-  }
-  
+  }  
 } catch (Exception $error) {
 
   echo "\n Erro: " . $error->getMessage()."\n\n";
 
+}finally{
+
+  echo "\n Aplicação finalizada! \n\n";
+
 }
-
-// finally{
-
-//   echo "\n Aplicação finalizada! \n\n";
-
-// }
 
 
 
