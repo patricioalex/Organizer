@@ -9,7 +9,7 @@
 
 
 /**
- * Interface control
+ * Interface controller
  */
 interface Controller {
 
@@ -62,7 +62,7 @@ interface Controller {
     public function __construct()
     {
       $this->setNameDir('Arquivos_');
-      $this->setNoExtension('sem_extensao');
+      $this->setNoExtension('SEM_EXTENSAO');
       $this->setAllFiles(array());
       $this->setDir(array());
     }
@@ -106,8 +106,8 @@ interface Controller {
      * @return void
      */
     public function folderExists($dir, $extension){
-      $this->setExtension(strtoupper($extension));   
-      if(in_array($this->getNameDir().strtoupper($extension), $this->getAllFiles())){
+      $this->setExtension(strtoupper($extension));  
+      if(file_exists($dir.'/'.$this->getNameDir().strtoupper($extension))){
           return true;
       }else{
         if($this->createFolder($dir, $extension)){
@@ -161,12 +161,16 @@ interface Controller {
     public function list(){
       /**
        * Tentar abrir o dretório para listar todos os arquivos
+       * Existe o método scandir() para listar diretórios
        */
       if(opendir($this->getDir())){
         $all = array();
         while($file = readdir()){
           if($file != '.' && $file != ".."){
-            $all[] = $file;
+            $hidden = substr($file, 0, 1);
+            if($hidden != '.'){
+              $all[] = $file;
+            }
           }
         } 
         /**
@@ -245,17 +249,20 @@ interface Controller {
        */
       $arrayFile = explode('.', $file);
       if(count($arrayFile) >= 2){
-        $extension = end($arrayFile);
-        if($extension <= 6){
-          if($this->folderExists($this->getDir(), $extension)){
-            return true;
+        // if($arrayFile[0] != '.'){
+          $extension = end($arrayFile);
+          if($extension <= 6){
+            if($this->folderExists($this->getDir(), $extension)){
+              return true;
+            }
+          }else{
+            $this->noExtension($this->getDir(), $file);
           }
-        }else{
-          $this->noExtension($this->getDir(), $file);
-        }
+        // }
       }else{
         $this->noExtension($this->getDir(), $file);
       }
+      // }
     }
 
 
@@ -301,7 +308,7 @@ interface Controller {
      * @return void
      */
     public function moveFile($file){
-      rename($this->getDir().$file, $this->getDir().$this->nameFolder().'/'.$file);
+      rename($this->getDir().'/'.$file, $this->getDir().$this->nameFolder().'/'.$file);
     }
 
 
@@ -434,6 +441,10 @@ try {
 }finally{
 
   echo "\n Aplicação finalizada! \n\n";
+  /**
+   * Testes para ver a lista de arquivos
+   */
+  // var_dump($control->getAllFiles());
 
 }
 
