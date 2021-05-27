@@ -48,7 +48,7 @@ interface OrganizerController {
  * Class  que implementa um contrato com métodos que realizam o controle das ações do organizador
  */
 
- class Organizer implements OrganizerController {
+class Organizer implements OrganizerController {
 
     
   /**
@@ -56,24 +56,24 @@ interface OrganizerController {
    *
    * @var [type]
    */
-    private $argv;
-    private $nameDir;
-    private $fileType;
-    private $allFiles;
-    private $withoutExtension;
-    private $dir ;
+  private $argv;
+  private $nameDir;
+  private $fileType;
+  private $allFiles;
+  private $withoutExtension;
+  private $dir ;
 
-    /**
-     * construct
-     */
-    public function __construct($argv, string $firstFolderName = null )
-    {
-      $this->setArgv($argv);
-      $this->setNameDir( $firstFolderName ? $firstFolderName : 'Arquivos_');
-      $this->setWithoutExtension('SEM_EXTENSAO');
-      $this->setAllFiles(array());
-      $this->setDir(array());
-    }
+  /**
+   * construct
+   */
+  public function __construct($argv, string $firstFolderName = null )
+  {
+    $this->setArgv($argv);
+    $this->setNameDir( $firstFolderName ? $firstFolderName : 'Arquivos_');
+    $this->setWithoutExtension('SEM_EXTENSAO');
+    $this->setAllFiles(array());
+    $this->setDir(array());
+  }
 
     /**
      * @method checkArgv()
@@ -87,7 +87,7 @@ interface OrganizerController {
         if(count($this->getArgv()) >= $greaterThanTow){
           return true;
         }
-        throw new Exception("Nenhum diretório informado. Por favor, informe um diretório.");
+        throw new Exception("Nenhum diretório informado. Por favor, informe um diretório como parâmetro.");
         return false;
     }
 
@@ -100,7 +100,7 @@ interface OrganizerController {
      */
     public function isDir(){
       if(is_dir($this->getArgv()[1])){
-        $this->setDir($this->getArgv()[1]);
+        $this->setDir($this->getArgv()[1].'/');
         return true;
       }
         throw new Exception("O argumento passado não é um diretório!");
@@ -116,17 +116,12 @@ interface OrganizerController {
    *
    */
   public function listDirectoryFiles(){
-    /**
-     * Existe o método scandir() nativo do PHP para listar diretórios
-     */
+    //Existe o método scandir() nativo do PHP para listar diretórios
     if(opendir($this->getDir())){
       $all = array();
       while($file = readdir()){
         if($file != '.' && $file != ".."){
-          $hidden = substr($file, 0, 1);
-          if($hidden != '.'){
-          array_push($all, $file);
-          }
+            array_push($all, $file);
         }
       } 
       $this->setAllFiles($all);     
@@ -134,244 +129,228 @@ interface OrganizerController {
       throw new Exception("O diretório não pode ser aberto! Talvez seja permissão de pasta.");
       return false;
     }
-    closedir();
+      closedir();
   }
 
-    public function hasFiles(){
-      if(!empty($this->getAllFiles())){
-        return true;
-      }
-        throw new Exception('Diretótio vazio!');
-        return false;
+  public function hasFiles(){
+    if(!empty($this->getAllFiles())){
+      return true;
     }
-
-    /**
-     * @method checkFolderExists()
-     * 
-     * Verifica se exite um diretório para a extensão/tipo de arquivo.
-     * Senão exitir, ele criará um.
-     */
-    public function checkFolderExists($fileType){
-      $this->setfileType(strtoupper($fileType));  
-      if(file_exists($this->getDir().'/'.$this->getNameDir().strtoupper($fileType))){
-          return true;
-      }else{
-        if($this->createFolder($fileType)){
-          return true;
-        }else{
-          throw new Exception("O diretório não pode ser criado! Talvez seja permissão de pasta.");
-          return false;
-        }  
-      }
+      throw new Exception('Diretótio vazio!');
       return false;
-    }
-
-    /**
-     * @method createFolderName()
-     * 
-     * Pega o nome do diretório da extensão/tipo do arquivo
-     * 
-     */
-    public function createFolderName(){
-        return $this->getNameDir().$this->getfileType();
-    }
-   
-    /**
-     * @method createFolder()
-     *
-     * Criador de diretório para extensã/Tipo de arquivo
-     */
-    public function createFolder($fileType){
-      if(mkdir($this->getDir().$this->getNameDir().strtoupper($fileType))){
-        return true;
-      }
-        return false;
-    }
-
-
-    
-    /**
-     * @method isFile()
-     * 
-     * Checa se o argumento é um arquivo ou diretório.
-     * Isso ocorre quando há dúvida se é uma arquivo ou diretório que não foi achado extensão ou o tamanho da extensão é maior que 6.
-     *
-     */
-    public function isFile($file){
-        if(is_dir($this->getDir().$file)){
-          return true;
-        }
-        return false;
-    }
-
-    /**
-     * @method fileType()
-     * 
-     * Valida se extiste extensão para o arquivo.
-     * Verifica se o tamanho do nome da extensão é maior que 6.
-     * Senão der false nas duas verificação acima, os mesmo serão verificados para saber se são diretório ou arquivo sem extensão.
-     * Verifica se existe diretório para o arquivo que foi validado nas outras etapas acima.
-     */
-    public function fileType($file){
-      $arrayFile = explode('.', $file);
-      $greaterThanTow = 2 ;
-      if(count($arrayFile) >= $greaterThanTow){
-          $fileType = end($arrayFile);
-          $lessThanOrEqualSix = 6;
-          if($fileType <= $lessThanOrEqualSix){
-            if($this->checkFolderExists($this->getDir(), $fileType)){
-              return true;
-            }
-          }else{
-            $this->withoutExtension($this->getDir(), $file);
-          }
-      }else{
-        $this->withoutExtension($this->getDir(), $file);
-      }
-    }
-
-
-    /**
-     * @method withoutExtension()
-     * 
-     * Aciona o método isFile para saber se é um arquivo ou diretório.
-     * Verfica se o diretório sem extensão exite. Senão exitir, será criado e moverá o respectivo arquivo.
-     * Aciona o método moveFile() se retornar true na etapa anterior.
-     *
-     */
-    public function withoutExtension($file){
-      if(!$this->isFile($file)){
-        if($this->checkFolderExists($this->getDir(), $this->getwithoutExtension())){
-          $this->moveFile($file);
-        }
-      }   
-    }
-    
-
-    /**
-     * @method moveFile()
-     * 
-     * Move arquvios para seus respectivos diretórios.
-     */
-    public function moveFile($file){
-      rename($this->getDir().'/'.$file, $this->getDir().$this->createFolderName().'/'.$file);
-    }
-
-    public function fileProcessing(){
-        foreach ($this->getAllFiles() as $file ) {
-          if($this->fileType($file)){
-            $this->moveFile($file);
-          }
-        }
-    }
-
-
-    /**
-     * Get atributos privates
-     *
-     */ 
-    public function getArgv()
-    {
-        return $this->argv;
-    }
-
-    /**
-     * Set atributos privates
-     *     *
-     */ 
-    public function setArgv($argv)
-    {
-        $this->argv = $argv;
-    }
-
-
-    /**
-     * Métodos especiais Getter e Setter
-     */
-
-   /**
-    * Get the value of nameDir
-    */ 
-   public function getNameDir()
-   {
-      return $this->nameDir;
-   }
-
-   /**
-    * setNameDir
-    *
-    * @param [type] $nameDir
-    * @return void
-    */
-   public function setNameDir($nameDir)
-   {
-      $this->nameDir = $nameDir;
-
-   }
-
-   /**
-    * Get the value of fileType
-    */ 
-   public function getfileType()
-   {
-      return $this->fileType;
-   }
-
-   /**
-    * setfileType
-    *
-    * @param [type] $fileType
-    * @return void
-    */
-   public function setfileType($fileType)
-   {
-      $this->fileType = $fileType;
-   }
-
-   /**
-    * Get the value of allFiles
-    */ 
-   public function getAllFiles()
-   {
-      return $this->allFiles;
-   }
-
-   /**
-    * Set the value of allFiles
-    *
-    * @return  void
-    */ 
-   public function setAllFiles($allFiles)
-   {
-      $this->allFiles = $allFiles;
-   }
-
-   /**
-    * Get the value of withoutExtension
-    */ 
-   public function getwithoutExtension()
-   {
-      return $this->withoutExtension;
-   }
+  }
 
   /**
-   * Undocumented function
+   * @method checkFolderExists()
+   * 
+   * Verifica se exite um diretório para a extensão/tipo de arquivo.
+   * Senão exitir, ele criará um.
+   */
+  public function checkFolderExists($fileType){
+    $this->setfileType(strtoupper($fileType));  
+    if(file_exists($this->getDir().$this->getNameDir().strtoupper($fileType))){
+        return true;
+    }else if($this->createFolder($fileType)){
+        return true;
+    }
+      throw new Exception("O diretório não existe e não foi possível criar! Talvez seja permissão de pasta. Por favor, verifique.");
+      return false;
+  }
+
+  /**
+   * @method createFolderName()
+   * 
+   * Pega o nome do diretório da extensão/tipo do arquivo
+   * 
+   */
+  public function createFolderName(){
+      return $this->getNameDir().$this->getfileType();
+  }
+  
+  /**
+   * @method createFolder()
+   *
+   * Criador de diretório para extensã/Tipo de arquivo
+   */
+  public function createFolder($fileType){
+    return mkdir($this->getDir() . $this->getNameDir() . strtoupper($fileType));
+  }
+
+
+    
+  /**
+   * @method isFile()
+   * 
+   * Checa se o argumento é um arquivo ou diretório.
+   * Isso ocorre quando há dúvida se é uma arquivo ou diretório que não foi achado extensão ou o tamanho da extensão é maior que 6.
+   *
+   */
+  public function isFile($file){
+      return is_dir($this->getDir().$file);
+  }
+
+  /**
+   * @method fileType()
+   * 
+   * Valida se extiste extensão para o arquivo.
+   * Verifica se o tamanho do nome da extensão é maior que 6.
+   * Senão der false nas duas verificação acima, os mesmo serão verificados para saber se são diretório ou arquivo sem extensão.
+   * Verifica se existe diretório para o arquivo que foi validado nas outras etapas acima.
+   */
+  public function fileType($file){
+    $arrayFile = explode('.', $file);
+    $fileType = end($arrayFile);
+    $greaterThanTow = 2 ;
+    $lessThanOrEqualSix = 6;
+    if($this->checkFolderExists($fileType) && count($arrayFile) >= $greaterThanTow && $fileType <= $lessThanOrEqualSix){
+        return true;
+    }
+      $this->withoutExtension($file);
+      return false;
+  }
+
+
+  /**
+   * @method withoutExtension()
+   * 
+   * Aciona o método isFile para saber se é um arquivo ou diretório.
+   * Verfica se o diretório sem extensão exite. Senão exitir, será criado e moverá o respectivo arquivo.
+   * Aciona o método moveFile() se retornar true na etapa anterior.
+   *
+   */
+  public function withoutExtension($file){
+    if(!$this->isFile($file)){
+      if($this->checkFolderExists($this->getwithoutExtension())){
+        $this->moveFile($file);
+      }
+    }   
+  }
+  
+
+  /**
+   * @method moveFile()
+   * 
+   * Move arquvios para seus respectivos diretórios.
+   */
+  public function moveFile($file){
+    rename($this->getDir().$file, $this->getDir().$this->createFolderName().'/'.$file);
+  }
+
+  public function fileProcessing(){
+      foreach ($this->getAllFiles() as $file ) {
+        if($this->fileType($file)){
+          $this->moveFile($file);
+        }
+      }
+  }
+
+
+  /**
+   * Get atributos privates
+   *
+   */ 
+  public function getArgv()
+  {
+      return $this->argv;
+  }
+
+  /**
+   * Set atributos privates
+   *     *
+   */ 
+  public function setArgv($argv)
+  {
+      $this->argv = $argv;
+  }
+
+
+  /**
+   * Métodos especiais Getter e Setter
+   */
+
+  /**
+  * Get the value of nameDir
+  */ 
+  public function getNameDir()
+  {
+    return $this->nameDir;
+  }
+
+  /**
+  * setNameDir function
+  *
+  * @param [type] $nameDir
+  * @return void
+  */
+  public function setNameDir($nameDir)
+  {
+    $this->nameDir = $nameDir;
+
+  }
+
+  /**
+  * Get the value of fileType
+  */ 
+  public function getfileType()
+  {
+    return $this->fileType;
+  }
+
+  /**
+  * setfileType
+  *
+  * @param [type] $fileType
+  * @return void
+  */
+  public function setfileType($fileType)
+  {
+    $this->fileType = $fileType;
+  }
+
+  /**
+  * Get the value of allFiles
+  */ 
+  public function getAllFiles()
+  {
+    return $this->allFiles;
+  }
+
+  /**
+  * Set the value of allFiles
+  *
+  * @return  void
+  */ 
+  public function setAllFiles($allFiles)
+  {
+    $this->allFiles = $allFiles;
+  }
+
+  /**
+  * Get the value of withoutExtension
+  */ 
+  public function getwithoutExtension()
+  {
+    return $this->withoutExtension;
+  }
+
+  /**
+   * setWithoutExtension function
    *
    * @param [type] $withoutExtension
    * @return void
-   */
-   public function setWithoutExtension($withoutExtension)
-   {
-      $this->withoutExtension = $withoutExtension;
-   }
+ */
+  public function setWithoutExtension($withoutExtension)
+  {
+    $this->withoutExtension = $withoutExtension;
+  }
 
-    /**
-    * Get the value of dir
-    */ 
-    public function getDir()
-    {
-       return $this->dir;
-    }
+  /**
+  * Get the value of dir
+  */ 
+  public function getDir()
+  {
+      return $this->dir;
+  }
  
     /**
      * Set the value of dir
@@ -389,24 +368,21 @@ interface OrganizerController {
   * Estrutura de exceções que inicia a operação do organizador
   */
 
-$organizer = new Organizer($argv);
+  $organizer = new Organizer($argv);
 
 try {
   $organizer->checkArgv();
   $organizer->isDir();
   $organizer->listDirectoryFiles();
   $organizer->hasFiles();
-  // $organizer->hasFiles();
-
+  $organizer->fileProcessing();
 
 } catch (Exception $error) {
-  echo "\n Erro: " . $error->getMessage()."\n\n";
-  echo "\n File: " . $error->getFile()."\n\n";
-  echo "\n Line: " . $error->getLine()."\n\n";
+  echo "\n Erro de Execução: " . $error->getMessage()."\n\n";
+  // echo "\n File do Erro de Execução: " . $error->getFile()."\n\n";
+  // echo "\n Line do Erro ocorrido: " . $error->getLine()."\n\n";
 }finally{
-
   // var_dump($organizer->getAllFiles());
-
 }
 
 
