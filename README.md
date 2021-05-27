@@ -10,3 +10,10 @@
 ## Obejtivo
 
 * Falicitar o dia a dia do usuário que utiliza qualquer sistema operacional.
+* Demostrar meus conhecimentos em PHP
+* Esse simples projeto faz parte do meu portfólio.
+
+## Resultado
+* Essa pequena aplicação tem como objetivo organizar os arquivos contidos em uma pasta que com o tempo acumulou muitos arquivos de direfentes tipos.
+
+* Ao executar ele cria a pasta com o nome do tipo de arquivo achado, e todo arquivo é checado, caso a pasta já existe uma pasta para aquele tipo de arquivo  ele apenas move, caso não exisitri, ele cria a pasta e move em sequida até que não reste nenhum arquivo na pasta. 
