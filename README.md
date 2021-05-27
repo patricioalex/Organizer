@@ -11,7 +11,7 @@
 
 * Falicitar o dia a dia do usuário que utiliza qualquer sistema operacional.
 * Demostrar meus conhecimentos em PHP
-* Esse simples projeto faz parte do meu portfólio.
+* Esse projeto faz parte do meu portfólio.
 
 ## Resultado
 * Essa pequena aplicação tem como objetivo organizar os arquivos contidos em uma pasta que com o tempo acumulou muitos arquivos de direfentes tipos.
