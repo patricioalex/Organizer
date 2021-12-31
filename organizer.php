@@ -112,7 +112,7 @@ class Organizer implements OrganizerController {
    * @method listDirectoryFiles()
    * 
    * Verifica e listDirectoryFilesa todos os arquivos contidos no diretório.
-   * Senão tiver arquivos no diretório, a aplicação é encerrada.
+   * Sen ão tiver arquivos no diretório, a aplicação é encerrada.
    *
    */
   public function listDirectoryFiles(){
@@ -132,6 +132,9 @@ class Organizer implements OrganizerController {
       closedir();
   }
 
+  /*
+  * verifica se i duretório está vázio.
+  */
   public function hasFiles(){
     if(!empty($this->getAllFiles())){
       return true;
@@ -144,7 +147,7 @@ class Organizer implements OrganizerController {
    * @method checkFolderExists()
    * 
    * Verifica se exite um diretório para a extensão/tipo de arquivo.
-   * Senão exitir, ele criará um.
+   * Se não exitir, ele criará um.
    */
   public function checkFolderExists($fileType){
     $this->setfileType(strtoupper($fileType));  
@@ -194,7 +197,6 @@ class Organizer implements OrganizerController {
    * 
    * Valida se extiste extensão para o arquivo.
    * Verifica se o tamanho do nome da extensão é maior que 6.
-   * Senão der false nas duas verificação acima, os mesmo serão verificados para saber se são diretório ou arquivo sem extensão.
    * Verifica se existe diretório para o arquivo que foi validado nas outras etapas acima.
    */
   public function fileType($file){
