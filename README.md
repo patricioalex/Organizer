@@ -14,6 +14,6 @@
 * Esse projeto faz parte do meu portfólio.
 
 ## Resultado
-* Essa pequena aplicação tem como objetivo organizar os arquivos contidos em uma pasta que com o tempo acumulou muitos arquivos de direfentes tipos.
+* Essa pequena aplicação tem como objetivo organizar os arquivos contidos em uma pasta que com o tempo acumularam com direfentes tipos.
 
-* Ao executar ele cria a pasta com o nome do tipo de arquivo achado, e todo arquivo é checado, caso a pasta já existe uma pasta para aquele tipo de arquivo  ele apenas move, caso não exisitri, ele cria a pasta e move em sequida até que não reste nenhum arquivo na pasta. 
+* Ao executar esse script, ele cria à pasta com o nome do tipo de arquivo achado. Caso a pasta já exista para aquele tipo de arquivo, ele apenas move. Porém, caso não exista, ele cria a pasta e move em seguida até que não reste nenhum arquivo no diretório informado. 
